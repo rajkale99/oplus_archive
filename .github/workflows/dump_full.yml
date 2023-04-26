@@ -40,3 +40,4 @@ jobs:
         body: ${{ inputs.ota }}
         tag: ${{ steps.download.outputs.ota_ver }}
         token: ${{ secrets.GITHUB_TOKEN }}
+
