@@ -41,9 +41,6 @@ for i in ${@:2}; do
 done
 wait
 
-# Compress with zstd
-zstd -T0 --rm ota/*
-
 # Echo tag name and release body
 echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 echo "body=$BODY" >> "$GITHUB_OUTPUT"
