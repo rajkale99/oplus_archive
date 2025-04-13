@@ -27,16 +27,35 @@ jobs:
     - name: Setup
       run: |
         sudo apt update
-        sudo apt -y install aria2 zstd
+        sudo apt -y install aria2 erofs-utils
 
     - name: Dump
       id: dump
       run: echo ${{ inputs.urls }} | xargs ./dump.sh
 
+    - name: dump erofs
+      run: |
+         cd ota 
+         sudo mkdir system system_ext product odm vendor
+         fsck.erofs --extract=system system.img
+         ls system
+         fsck.erofs --extract=system_ext system_ext.img
+         ls system_ext
+         fsck.erofs --extract=odm odm.img 
+         ls odm
+         fsck.erofs --extract=vendor vendor.img 
+         ls vendor
+         fsck.erofs --extract=product product.img
+         ls product
+         
+    - name: Zip
+      run: |
+        cd ota && sudo bash ../zip.sh
+        
     - name: Upload release assets
       uses: ncipollo/release-action@v1
       with:
-        artifacts: ota/*.img.zst
+        artifacts: ota/*.zip
         artifactErrorsFailBuild: true
         body: ${{ steps.dump.outputs.body }}
         tag: ${{ steps.dump.outputs.tag }}
